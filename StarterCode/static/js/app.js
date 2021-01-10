@@ -1,13 +1,27 @@
 // create chart
 function createChart(id) {
     d3.json("samples.json").then(function(data) {
-
+        // variables for createChart function
+        var names = data.names;
+        var sample_values = data.sample_values;
+        var otu_ids = data.otu_ids;
+        var otu_labels = data.otu_labels;
+        
+        // create the horizontal bar chart
+        var trace1 = {
+            type: "bar",
+            name: names,
+            x: [sample_values],
+            y: [otu_ids],
+            orientation: 'h'
+        };
+      
+        Plotly.newPlot("bar", trace1);
     });
+
 };
 
 // Use the D3 library to read in `samples.json`.
-
-
 function init() {
     var dropdown = d3.select("#selDataset");
     // console.log(dropdown);
@@ -28,11 +42,3 @@ function init() {
 };
 
 init();
-
-// 2. Create a horizontal bar chart with a dropdown menu to display the top 10 OTUs found in that individual.
-
-// * Use `sample_values` as the values for the bar chart.
-
-// * Use `otu_ids` as the labels for the bar chart.
-
-// * Use `otu_labels` as the hovertext for the chart.
