@@ -9,7 +9,7 @@ function createChart(id) {
 
         });
         var filteredID = filteredData[0];
-        console.log(filteredID);
+        // console.log(filteredID);
         // variables for createChart function
         var sample_values = filteredID.sample_values;
         var otu_ids = filteredID.otu_ids;
@@ -34,9 +34,25 @@ function createChart(id) {
               color: otu_ids
             }
         };
+
+        // create layouts for plots
+        // bar chart layout
+        var layout1 = {
+            title: "Top 10 OTU's",
+            xaxis: { title: "Number of OTU's"},
+            yaxis: { title: "OTU Types"}
+        };
+
+        // bubble chart layout
+        var layout2 = {
+            title: "Amount of OTU's in Sample",
+            xaxis: { title: "OTU ID"},
+            yaxis: { title: "Number of OTU's"}
+        }
+
       
-        Plotly.newPlot("bar", [trace1]);
-        Plotly.newPlot("bubble", [trace2]);
+        Plotly.newPlot("bar", [trace1], layout1);
+        Plotly.newPlot("bubble", [trace2], layout2);
     });
 
 };
@@ -58,7 +74,7 @@ function init() {
         // console.log(data);
         var initName = names[0];
         displayMetadata(initName);
-        console.log(initName);
+        // console.log(initName);
         createChart(initName);
     });
 };
@@ -76,7 +92,7 @@ function displayMetadata(id) {
 
 
         });
-        console.log(filteredData);
+        // console.log(filteredData);
         metadata.html("");
 
         var filteredID = filteredData[0];
