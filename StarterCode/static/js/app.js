@@ -1,22 +1,42 @@
 // create chart
 function createChart(id) {
     d3.json("samples.json").then(function(data) {
+        // console.log(data);
+        var samples = data.samples
+        var filteredData = samples.filter(sample => {
+
+            return id == sample.id
+
+        });
+        var filteredID = filteredData[0];
+        console.log(filteredID);
         // variables for createChart function
-        var names = data.names;
-        var sample_values = data.sample_values;
-        var otu_ids = data.otu_ids;
-        var otu_labels = data.otu_labels;
+        var sample_values = filteredID.sample_values;
+        var otu_ids = filteredID.otu_ids;
+        var otu_labels = filteredID.otu_labels;
         
-        // create the horizontal bar chart
+        // create the horizontal bar chart to show top 10 OTUs found in individual
         var trace1 = {
             type: "bar",
-            name: names,
-            x: [sample_values],
-            y: [otu_ids],
+            x: sample_values,
+            y: otu_ids,
             orientation: 'h'
         };
+
+        //create the bubble chart that displays each sample
+        var trace2 = {
+            x: otu_ids,
+            y: sample_values,
+            text: otu_labels,
+            mode: 'markers',
+            marker: {
+              size: sample_values,
+              color: otu_ids
+            }
+        };
       
-        Plotly.newPlot("bar", trace1);
+        Plotly.newPlot("bar", [trace1]);
+        Plotly.newPlot("bubble", [trace2]);
     });
 
 };
@@ -24,21 +44,56 @@ function createChart(id) {
 // Use the D3 library to read in `samples.json`.
 function init() {
     var dropdown = d3.select("#selDataset");
-    // console.log(dropdown);
 
+    // console.log(dropdown);
+    // console.log(metadata);
 
     d3.json("samples.json").then(function(data) {
         var names = data.names;
         names.forEach(name => {
-            console.log(name);
+            // console.log(name);
             dropdown.append("option").text(name).property("value", name);
         });
-        console.log(names);
-        console.log(data);
+        // console.log(names);
+        // console.log(data);
         var initName = names[0];
-
+        displayMetadata(initName);
+        console.log(initName);
         createChart(initName);
     });
+};
+
+function displayMetadata(id) {
+    var metadata = d3.select("#sample-metadata");
+
+    d3.json("samples.json").then(function(data) {
+        var samples = data.metadata;
+        var filteredData = samples.filter(sample => {
+            // console.log(sample.id);
+            // console.log(id);
+
+            return id == sample.id
+
+
+        });
+        console.log(filteredData);
+        metadata.html("");
+
+        var filteredID = filteredData[0];
+        // console.log("sample", sample);
+        Object.entries(filteredID).forEach(stat => {
+            // console.log(stat);
+            metadata.append("p").text(stat[0] + " " + stat[1]);
+        });
+
+    });
+}
+
+function optionChanged(id) {
+    // console.log(id);
+    displayMetadata(id);
+    createChart(id);
+
 };
 
 init();
